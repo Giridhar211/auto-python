@@ -1,9 +1,17 @@
-﻿$PATH = "C:\tmp"
-$files = Get-ChildItem $PATH
+﻿
+$DOWNLOAD_LATEST = "https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe"
+$PATH = "C:\tmp"
+$FILES = Get-ChildItem $PATH
+
+function Install-Python{
+
+Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe -UseBasicParsing | Out-File $PATH
+
+}
 
 function Get-Packages{
 
-    foreach($file in $files){
+    foreach($file in $FILES){
     
         #create Folder for Processing, delete it after usage in script
         New-Item -Path C:\lightrunner -ItemType directory
@@ -25,5 +33,14 @@ function Get-Packages{
             $package[1] | Out-File -Encoding ascii -Append C:\lightrunner\pip_packages_py.json
         }
     }
-    #Remove-Item -Recurse -Force -Path C:\lightrunner
+    
 }
+function Install-Packages{
+
+
+
+
+    
+}
+#Remove-Item -Recurse -Force -Path C:\lightrunner
+Install-Python
