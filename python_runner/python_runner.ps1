@@ -8,7 +8,7 @@ $my_path = "C:\tmp"
 
 #create Folder and env for Processing, delete it after usage in script
 $LIGHTRUNNER = "$my_path\lightrunner"
-if (Get-Item -Path $LIGHTRUNNER){
+if (Test-Path -Path $LIGHTRUNNER){
      Write-Output "Path $LIGHTRUNNER already exists"
 }
 else{
@@ -20,10 +20,10 @@ function Install-Python {
 
     #Download Python
     $webobject = New-Object System.Net.WebClient
-    $webobject.DownloadFile($DOWNLOAD_LATEST_PYTHON,"$LIGHTRUNNER\acutualpythonversion.exe")
+    $webobject.DownloadFile($DOWNLOAD_PYTHON,"$LIGHTRUNNER\acutualpythonversion.exe")
 
     #Download Pip Package Installer
-    $webobject.DownloadFile($DOWNLOAD_LATEST_PIP,"$LIGHTRUNNER\pip.zip")
+    $webobject.DownloadFile($DOWNLOAD_PYTHON_PIP,"$LIGHTRUNNER\pip.zip")
 
     Start-Process -FilePath $LIGHTRUNNER\* -ArgumentList /quiet
 
