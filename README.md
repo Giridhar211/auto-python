@@ -1,19 +1,22 @@
-# auto-pip
-automatic installation of pyton packages with pip installer
+# auto-python
 
-## Package
+## Easy Install
+automatic installation of Pyton
 
-Package must include: 
+1. Donwload Zip Archive
+2. Extract it and execute **python_runner.ps1** with Powershell
 
-- config File .cfg
-- runner for Windows ps1
-- runner for Linux bash
+> Important: Execute Script as Administrator. 
 
-## Installing 
+## Change Environment Variables
+The Script Contains two Sections to override variables: 
 
-Installing Options will be: 
 
-- Installing from Source (web request)
-- Load Installing File in \install
+*$PythonInstallOptions:* In diesem Array können zusätzliche Parameter für die Python Installation festgelegt wwerden.
+*$PythonPipInstallOptions* In diesem Array können zusätzliche Parameter für die Installation vom Pip Paket Manager festgelegt werden
+                           
+## Why is Variable $MyScripts added but not used ?
+
+There is another function planned to implement soon into this Script. Variable $MyScripts could be used for this added function
 
 
