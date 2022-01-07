@@ -18,7 +18,7 @@ $MyScripts = "C:\tmp" #OVERRIDE!
 $PythonInstallOptions = @(
 
     "InstallAllUsers=1",#system wide installation
-    "PrependPath=1"     #add PATH to Environment
+    "PrependPath=1",     #add PATH to Environment
     "include_pip=1",    #add pip package manager
     "include_test=1"     #install python documentary
 )
