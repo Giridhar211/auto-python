@@ -1,63 +1,68 @@
-﻿
-#Download URL's
-$DOWNLOAD_PYTHON = "https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe" 
-$DOWNLOAD_PYTHON_PIP = "https://github.com/pypa/pip/archive/refs/heads/main.zip" 
+﻿#Author Simon Dürr
+#Date 07.01.2022
+#Version Beta 0.1
 
-#Path with your Python files
-$my_path = "C:\tmp"
+$RunnerSources = "$env:ProgramFiles\runner"
 
-#create Folder and env for Processing, delete it after usage in script
-$LIGHTRUNNER = "$my_path\lightrunner"
-if (Test-Path -Path $LIGHTRUNNER){
-     Write-Output "Path $LIGHTRUNNER already exists"
+###Environment Variables To Override ###
+#1.Download URL
+$DownloadUrl = "https://www.python.org/ftp/python/3.10.0/python-3.10.0-amd64.exe"
+
+#2. Python Version
+$PythonVersion = "Python 3.10.0"
+
+#3.Location Python Scripts
+$MyScripts = "C:\tmp" #OVERRIDE!
+
+#4. Additional Install Options for Python 1=True, 0=False
+$PythonInstallOptions = @(
+
+    "InstallAllUsers=1",#system wide installation
+    "PrependPath=1"     #add PATH to Environment
+    "include_pip=1",    #add pip package manager
+    "include_test=1"     #install python documentary
+)
+
+#5. Additional Pip Installing Options 
+$PythonPipInstallOptions = @(
+    "virtualenv"
+    "--upgrade pip"
+)
+
+### End Enviornment Variable Block"
+
+if (Test-Path -Path $RunnerSources){
+     Write-Output "Path $RunnerSources already exists"
 }
 else{
-   New-Item -Path $LIGHTRUNNER -ItemType directory
+   New-Item -Path $RunnerSources -ItemType directory
 }
 
-
+if ((gp HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName -Match $PythonVersion){
+    Write-Host "
+    Selected Version $PythonVersion of Python Already Installed"
+    }
+    
+else {
+Write-Output "Installing Python Version: $PythonVersion, before Proceding Packages"
+Install-Python -Wait
+}
+   
 function Install-Python {
 
     #Download Python
     $webobject = New-Object System.Net.WebClient
-    $webobject.DownloadFile($DOWNLOAD_PYTHON,"$LIGHTRUNNER\acutualpythonversion.exe")
+    $webobject.DownloadFile($DOWNLOAD_URL,"$RUNNER\acutualpythonversion.exe")
 
-    #Download Pip Package Installer
-    $webobject.DownloadFile($DOWNLOAD_PYTHON_PIP,"$LIGHTRUNNER\pip.zip")
+    Start-Process -FilePath $RUNNER\*.exe -ArgumentList "/quiet $PythonInstallOptions" -Wait
 
-    Start-Process -FilePath $LIGHTRUNNER\* -ArgumentList /quiet
-
-}
-function Get-Package{
-
-    foreach($file in Get-ChildItem $my_path){
-
-   
-        $match = Select-String -InputObject $file -Pattern "from"  
-        $match | % { $match_string += "$_ "} #Var Type System Array
-
-    
-        #Remove Illegal Chars and Numbers
-        $path_length = $PATH.Length
-        $regex_var = $match -replace ("^.{0,$path_length}|$file|:|\d","") | Out-File -Encoding ascii -Append "$LIGHTRUNNER\regex_py.json"
-
-        #Get Packages
-        $lines_txt = Get-Content "$LIGHTRUNNER\regex_py.json"
-        foreach($_ in $lines_txt){
-            $package = $_.split()
-            Write-Output $package[1]
-            #Safe Package Names in pip_packages_py.json file
-            $package[1] | Out-File -Encoding ascii -Append "$LIGHTRUNNER\packages_py.txt"
-        }
+    if ([string]::IsNullOrEmpty($PythonPipInstallOptions)){
+        Write-Output "No Options for Pip Installer set, installation continue ..."
     }
     
+    else{
+        foreach ($pip in $PythonPipInstallOptions){
+        py -m pip install $pip
+        }
+    }
 }
-function Install-Packages{
-
-
-
-
-    
-}
-#Remove-Item -Recurse -Force -Path C:\lightrunner
-Get-Package
