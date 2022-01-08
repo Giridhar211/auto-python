@@ -52,7 +52,7 @@ function Install-Python {
 
     #Download Python
     $webobject = New-Object System.Net.WebClient
-    $webobject.DownloadFile($DOWNLOAD_URL,"$RUNNER\acutualpythonversion.exe")
+    $webobject.DownloadFile($DownloadUrl,"$RUNNER\acutualpythonversion.exe")
 
     Start-Process -FilePath $RUNNER\*.exe -ArgumentList "/quiet $PythonInstallOptions" -Wait
 
