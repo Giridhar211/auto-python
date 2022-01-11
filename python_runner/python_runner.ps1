@@ -27,27 +27,10 @@ $PythonInstallOptions = @(
 $PythonPipInstallOptions = @(
     "virtualenv"
     "--upgrade pip"
-)
 
+)
 ### End Enviornment Variable Block"
 
-if (Test-Path -Path $RunnerSources){
-     Write-Output "Path $RunnerSources already exists"
-}
-else{
-   New-Item -Path $RunnerSources -ItemType directory
-}
-
-if ((gp HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName -Match $PythonVersion){
-    Write-Host "
-    Selected Version $PythonVersion of Python Already Installed"
-    }
-    
-else {
-Write-Output "Installing Python Version: $PythonVersion, before Proceding Packages"
-Install-Python -Wait
-}
-   
 function Install-Python {
 
     #Download Python
@@ -65,4 +48,23 @@ function Install-Python {
         py -m pip install $pip
         }
     }
+}
+
+
+#main
+if (Test-Path -Path $RunnerSources){
+     Write-Output "Path $RunnerSources already exists"
+}
+else{
+   New-Item -Path $RunnerSources -ItemType directory
+}
+
+if ((gp HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*).DisplayName -Match $PythonVersion){
+    Write-Host "
+    Selected Version $PythonVersion of Python Already Installed"
+    }
+    
+else {
+Write-Output "Installing Python Version: $PythonVersion, before Proceding Packages"
+Install-Python -Wait
 }
